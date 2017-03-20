@@ -1,0 +1,12 @@
+*.pdsbak
+*.DO
+*.EDF
+*.log
+*.workspace
+*.sts
+build/
+dist/
+nbproject/private/
+*.rte
+funclist
+*.obj
