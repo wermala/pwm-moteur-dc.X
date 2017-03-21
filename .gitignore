@@ -1,13 +1,12 @@
+*.workspace
 *.pdsbak
+*.obj
 *.DO
 *.EDF
 *.log
-*.workspace
 *.sts
+*.rte
+funclist
 build/
 dist/
 nbproject/private/
-*.rte
-funclist
-*.obj
-nbproject/Makefile-impl.mk
