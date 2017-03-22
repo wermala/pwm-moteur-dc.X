@@ -10,3 +10,8 @@ funclist
 build/
 dist/
 nbproject/private/
+nbproject/*.mk
+nbproject/*.bash
+nbproject/*.properties
+*.DS_Store
+Thumbs.db
