@@ -14,8 +14,8 @@
 #pragma config LVP = OFF        // Single Supply Enable bits off.
 
 typedef enum {
-    AVANT = 0b01,
-    ARRIERE = 0b10
+    AVANT = 1,
+    ARRIERE = 2
 } Direction;
 
 /**
@@ -25,6 +25,10 @@ typedef enum {
  */
 Direction conversionDirection(unsigned char v) {
     // À implémenter.
+    if(v<128)
+    {
+        return ARRIERE;
+    }
     return AVANT;
 }
 
@@ -35,7 +39,18 @@ Direction conversionDirection(unsigned char v) {
  */
 unsigned char conversionMagnitude(unsigned char v) {
     // À implémenter.
-    return 0;
+    int magnitude;
+    
+    if(v<128)
+    {
+        magnitude = 254-2*v;
+    }
+    else
+    {
+        magnitude = (v-128)*2;
+    }
+    
+    return magnitude;
 }
 
 #ifndef TEST
@@ -45,6 +60,31 @@ unsigned char conversionMagnitude(unsigned char v) {
  */
 static void hardwareInitialise() {
     // À implémenter.
+    // Configure le module A/D:
+    TRISBbits.RB3 = 1;      // Active RB3 comme entrée.
+    ANSELBbits.ANSB3 = 1;   // Active AN9 comme entrée analogique.
+    ADCON0bits.ADON = 1;    // Allume le module A/D.
+    ADCON0bits.CHS = 9;    // Selection du channel: AN9
+    ADCON2bits.ADFM = 0;    // Les 8 bits plus signifiants sur ADRESH.
+
+    PIE1bits.ADIE = 1;      // Active les interr. A/D
+    IPR1bits.ADIP = 0;      // Interr. A/D sont de basse priorité.
+
+    // Active les sorties digitales:
+    ANSELC = 0;
+    TRISC = 0b11111100;
+            
+    // Temporisateur 2 
+    T2CONbits.T2CKPS = 0;       // Pas de diviseur de fréquence.
+    T2CONbits.TMR2ON = 1;       // Active le temporisateur 2    
+    T2CONbits.T2OUTPS = 0b1001; // Post division par 10
+    PR2 = 250;                  // Compte jusqu'à 250 (250*4us=1ms)
+
+    
+    // Active les interruptions de haute et de basse priorité:
+    RCONbits.IPEN = 1;
+    INTCONbits.GIEH = 1;
+    INTCONbits.GIEL = 1;
 }
 
 /**
