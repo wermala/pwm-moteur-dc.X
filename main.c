@@ -79,12 +79,17 @@ static void hardwareInitialise() {
     T2CONbits.TMR2ON = 1;       // Active le temporisateur 2    
     T2CONbits.T2OUTPS = 0b1001; // Post division par 10
     PR2 = 250;                  // Compte jusqu'à 250 (250*4us=1ms)
+    CCPTMRS0bits.C1TSEL = 00;           // CCP1 utilise TMR2
+    CCP1CONbits.CCP1M = 0b00001111;     // PWM mode
 
-    
+
     // Active les interruptions de haute et de basse priorité:
     RCONbits.IPEN = 1;
     INTCONbits.GIEH = 1;
     INTCONbits.GIEL = 1;
+    PIE1bits.ADIE = 1;          // Active les interruptions de conv AD
+    PIE1bits.TMR2IE = 1;        // Active les interruption du TMR2             
+    IPR1bits.ADIP = 1;
 }
 
 /**
